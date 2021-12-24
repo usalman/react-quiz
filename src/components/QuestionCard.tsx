@@ -21,13 +21,13 @@ const QuestionCard: React.FC<IQuestionCard> = ({
     </p>
     <p dangerouslySetInnerHTML={{ __html: question }} />
     <div>
-      {answers.map((answer) => {
+      {answers && answers.map((answer) => (
         <div>
           <button disabled={userAnswer} onClick={callback}>
             <span dangerouslySetInnerHTML={{ __html: answer }} />
           </button>
-        </div>;
-      })}
+        </div>
+      ))}
     </div>
   </>
 );

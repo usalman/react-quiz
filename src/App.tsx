@@ -43,15 +43,20 @@ const App = () => {
       ) : null}
       {userAnswers.length === TOTAL_QUESTIONS ? <p>Score:</p> : null}
       {loading && <p>Loading Questions...</p>}
-      {/* <QuestionCard
-        questionNr={number + 1}
-        totalQuestions={TOTAL_QUESTIONS}
-        question={questions[number].question}
-        answers={questions[number].answers}
-        userAnswer={userAnswers ? userAnswers[number] : undefined}
-        callback={checkAnswer}
-      /> */}
-      {!gameOver && !loading ? <button onClick={nextQuestion}>Next Question</button> : null}
+
+      {!gameOver && !loading ? (
+        <div>
+          <QuestionCard
+            questionNr={number + 1}
+            totalQuestions={TOTAL_QUESTIONS}
+            question={questions[number].question}
+            answers={questions[number].answers}
+            userAnswer={userAnswers ? userAnswers[number] : undefined}
+            callback={checkAnswer}
+          />
+          <button onClick={nextQuestion}>Next Question</button>
+        </div>
+      ) : null}
     </div>
   );
 };
