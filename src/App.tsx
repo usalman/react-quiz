@@ -11,7 +11,8 @@ const App = () => {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
   
-  fetchQuizQuestions(5, 'medium')
+  console.log(fetchQuizQuestions(5, 'medium'));
+  
   const startTrivia = async () => {};
 
   const checkAnswer = () => {};
