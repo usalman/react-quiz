@@ -11,7 +11,7 @@ export interface Question {
 }
 
 export interface QuestionState extends Question {
-  answers: string[];
+  answer: string[];
 }
 
 export const fetchQuizQuestions = async (

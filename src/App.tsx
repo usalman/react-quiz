@@ -22,8 +22,6 @@ const App = () => {
     setLoading(true);
     setGameOver(false);
     const newQuestions = await fetchQuizQuestions(TOTAL_QUESTIONS, "easy");
-    console.log(newQuestions);
-
     setQuestions(newQuestions);
     setLoading(false);
     setUserAnswers([]);
@@ -31,7 +29,13 @@ const App = () => {
     setNumber(0);
   };
 
-  const checkAnswer = () => {};
+  const checkAnswer = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (!gameOver) {
+      const answer: string = e.currentTarget.value;
+      console.log(answer);
+      
+    }
+  };
 
   const nextQuestion = () => {};
 
@@ -50,7 +54,7 @@ const App = () => {
             questionNr={number + 1}
             totalQuestions={TOTAL_QUESTIONS}
             question={questions[number].question}
-            answers={questions[number].answers}
+            answers={questions[number].answer}
             userAnswer={userAnswers ? userAnswers[number] : undefined}
             callback={checkAnswer}
           />
