@@ -11,17 +11,20 @@ interface IAnswerObject {
 
 const TOTAL_QUESTIONS = 3;
 const App = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [questions, setQuestions] = useState<QuestionState[]>([]);
-  const [number, setNumber] = useState(0);
+  const [number, setNumber] = useState<number>(0);
   const [userAnswers, setUserAnswers] = useState<IAnswerObject[]>([]);
-  const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(true);
+  const [score, setScore] = useState<number>(0);
+  const [gameOver, setGameOver] = useState<boolean>(true);
 
-  const startTrivia = async () => {
+  const startTrivia = async (): Promise<void> => {
     setLoading(true);
     setGameOver(false);
-    const newQuestions = await fetchQuizQuestions(TOTAL_QUESTIONS, "easy");
+    const newQuestions: QuestionState[] = await fetchQuizQuestions(
+      TOTAL_QUESTIONS,
+      "easy"
+    );
     setQuestions(newQuestions);
     setLoading(false);
     setUserAnswers([]);
@@ -29,28 +32,26 @@ const App = () => {
     setNumber(0);
   };
 
-  const checkAnswer = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (!gameOver) {
-      const answer: string = e.currentTarget.value;
-      const isAnswerCorrect: boolean =
-        answer === questions[number].correct_answer;
-      if (isAnswerCorrect) setScore((prev) => prev + 1);
-      const answerObject = {
-        question: questions[number].question,
-        answer,
-        correct: isAnswerCorrect,
-        correctAnswer: questions[number].correct_answer,
-      };
-      setUserAnswers((prev) => [...prev, answerObject]);
-    }
+  const checkAnswer = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+    const answer: string = e.currentTarget.value;
+    const isAnswerCorrect: boolean =
+      answer === questions[number].correct_answer;
+    if (isAnswerCorrect) setScore((prev) => prev + 1);
+    const answerObject: IAnswerObject = {
+      question: questions[number].question,
+      answer,
+      correct: isAnswerCorrect,
+      correctAnswer: questions[number].correct_answer,
+    };
+    setUserAnswers((prev) => [...prev, answerObject]);
   };
 
   const nextQuestion = () => {
-    const nextQuestionNumber: number = number + 1
-    if(nextQuestionNumber === TOTAL_QUESTIONS) {
-      setGameOver( true)
+    const nextQuestionNumber: number = number + 1;
+    if (nextQuestionNumber === TOTAL_QUESTIONS) {
+      setGameOver(true);
     } else {
-      setNumber(nextQuestionNumber)
+      setNumber(nextQuestionNumber);
     }
   };
 
