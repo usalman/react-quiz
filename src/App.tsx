@@ -1,19 +1,35 @@
 import { useState } from "react";
 import QuestionCard from "./components/QuestionCard";
-import { fetchQuizQuestions } from "./API";
+import { fetchQuizQuestions, QuestionState } from "./API";
+
+interface IAnswerObject {
+  question: string;
+  answer: string;
+  correct: boolean;
+  correctAnswer: string;
+}
 
 const TOTAL_QUESTIONS = 10;
 const App = () => {
   const [loading, setLoading] = useState(false);
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState<QuestionState[]>([]);
   const [number, setNumber] = useState(0);
-  const [userAnswers, setUserAnswers] = useState([]);
+  const [userAnswers, setUserAnswers] = useState<IAnswerObject[]>([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
-  
-  console.log(fetchQuizQuestions(5, 'medium'));
-  
-  const startTrivia = async () => {};
+
+  const startTrivia = async () => {
+    setLoading(true);
+    setGameOver(false);
+    const newQuestions = await fetchQuizQuestions(TOTAL_QUESTIONS, "easy");
+    console.log(newQuestions);
+
+    setQuestions(newQuestions);
+    setLoading(false);
+    setUserAnswers([]);
+    setScore(0);
+    setNumber(0);
+  };
 
   const checkAnswer = () => {};
 
@@ -22,9 +38,11 @@ const App = () => {
   return (
     <div className="App">
       <h1>React Quiz</h1>
-      <button onClick={startTrivia}>Start Quiz</button>
-      <p>Score:</p>
-      <p>Loading Questions...</p>
+      {gameOver || userAnswers.length === TOTAL_QUESTIONS ? (
+        <button onClick={startTrivia}>Start Quiz</button>
+      ) : null}
+      {userAnswers.length === TOTAL_QUESTIONS ? <p>Score:</p> : null}
+      {loading && <p>Loading Questions...</p>}
       {/* <QuestionCard
         questionNr={number + 1}
         totalQuestions={TOTAL_QUESTIONS}
@@ -33,7 +51,7 @@ const App = () => {
         userAnswer={userAnswers ? userAnswers[number] : undefined}
         callback={checkAnswer}
       /> */}
-      <button onClick={nextQuestion}>Next Question</button>
+      {!gameOver && !loading ? <button onClick={nextQuestion}>Next Question</button> : null}
     </div>
   );
 };
