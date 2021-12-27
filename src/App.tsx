@@ -31,6 +31,8 @@ const App = () => {
       amount,
       difficulty
     );
+    console.log(newQuestions);
+    
     setQuestions(newQuestions);
     setLoading(false);
     setUserAnswers([]);
@@ -44,7 +46,14 @@ const App = () => {
     const answer: string = e.currentTarget.value;
     const isAnswerCorrect: boolean =
       answer === questions[number].correct_answer;
-    if (isAnswerCorrect) setScore((prev) => prev + 1);
+    if (isAnswerCorrect) {
+      e.currentTarget.style.backgroundColor = "green";
+      setScore((prev) => prev + 1);
+    } else {
+      e.currentTarget.style.backgroundColor = "red";
+      console.log(e.currentTarget);
+      
+    }
     const answerObject: IAnswerObject = {
       question: questions[number].question,
       answer,
