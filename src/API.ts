@@ -16,7 +16,7 @@ export interface QuestionState extends Question {
 export const fetchQuizQuestions = async (
   amount: number,
   difficulty: "easy" | "medium" | "hard"
-):Promise<any> => {
+): Promise<any> => {
   const endpoint = `https://opentdb.com/api.php?amount=${amount}&difficulty=${difficulty}&type=multiple`;
   const data = await (await fetch(endpoint)).json();
   return data.results.map((question: Question) => ({

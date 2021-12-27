@@ -9,7 +9,6 @@ interface IAnswerObject {
   correctAnswer: string;
 }
 
-const TOTAL_QUESTIONS = 3;
 const App = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [questions, setQuestions] = useState<QuestionState[]>([]);
@@ -17,13 +16,20 @@ const App = () => {
   const [userAnswers, setUserAnswers] = useState<IAnswerObject[]>([]);
   const [score, setScore] = useState<number>(0);
   const [gameOver, setGameOver] = useState<boolean>(true);
+  const [totalQuestions, setTotalQuestions] = useState<number>(0);
 
-  const startTrivia = async (): Promise<void> => {
+  const startTrivia = async (
+    e: React.FormEvent<HTMLFormElement>,
+    amount: number,
+    difficulty: "easy" | "medium" | "hard"
+  ): Promise<void> => {
+    e.preventDefault();
+    setTotalQuestions(amount);
     setLoading(true);
     setGameOver(false);
     const newQuestions: QuestionState[] = await fetchQuizQuestions(
-      TOTAL_QUESTIONS,
-      "easy"
+      amount,
+      difficulty
     );
     setQuestions(newQuestions);
     setLoading(false);
@@ -32,7 +38,9 @@ const App = () => {
     setNumber(0);
   };
 
-  const checkAnswer = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+  const checkAnswer = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ): void => {
     const answer: string = e.currentTarget.value;
     const isAnswerCorrect: boolean =
       answer === questions[number].correct_answer;
@@ -48,7 +56,7 @@ const App = () => {
 
   const nextQuestion = () => {
     const nextQuestionNumber: number = number + 1;
-    if (nextQuestionNumber === TOTAL_QUESTIONS) {
+    if (nextQuestionNumber === totalQuestions) {
       setGameOver(true);
     } else {
       setNumber(nextQuestionNumber);
@@ -58,17 +66,39 @@ const App = () => {
   return (
     <div className="App">
       <h1>React Quiz</h1>
-      {gameOver || userAnswers.length === TOTAL_QUESTIONS ? (
-        <button onClick={startTrivia}>Start Quiz</button>
+      {gameOver || userAnswers.length === totalQuestions ? (
+        <form
+          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+            startTrivia(
+              e,
+              parseInt(e.currentTarget.totalQuestions.value),
+              e.currentTarget.difficulty.value
+            );
+          }}
+        >
+          <input
+            type="text"
+            placeholder="total questions:"
+            name="totalQuestions"
+          />
+          <select name="difficulty">
+            <option value="easy">easy</option>
+            <option value="medium">medium</option>
+            <option value="hard">hard</option>
+          </select>
+          <button type="submit">Start Quiz</button>
+        </form>
       ) : null}
-      {userAnswers.length === TOTAL_QUESTIONS ? <p>Score: {score}</p> : null}
+      {userAnswers.length === totalQuestions && totalQuestions !== 0 ? (
+        <p>Score: {score}</p>
+      ) : null}
       {loading && <p>Loading Questions...</p>}
 
       {!gameOver && !loading ? (
         <div>
           <QuestionCard
             questionNr={number + 1}
-            totalQuestions={TOTAL_QUESTIONS}
+            totalQuestions={totalQuestions}
             question={questions[number].question}
             answers={questions[number].answer}
             userAnswer={userAnswers ? userAnswers[number] : undefined}
@@ -77,7 +107,7 @@ const App = () => {
           {!gameOver &&
           !loading &&
           userAnswers.length === number + 1 &&
-          number !== TOTAL_QUESTIONS - 1 ? (
+          number !== totalQuestions - 1 ? (
             <button onClick={nextQuestion}>Next Question</button>
           ) : null}
         </div>
