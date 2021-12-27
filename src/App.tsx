@@ -1,6 +1,7 @@
 import { useState } from "react";
 import QuestionCard from "./components/QuestionCard";
 import { fetchQuizQuestions, QuestionState } from "./API";
+import QuizForm from "./components/QuizForm";
 
 interface IAnswerObject {
   question: string;
@@ -32,7 +33,7 @@ const App = () => {
       difficulty
     );
     console.log(newQuestions);
-    
+
     setQuestions(newQuestions);
     setLoading(false);
     setUserAnswers([]);
@@ -52,7 +53,6 @@ const App = () => {
     } else {
       e.currentTarget.style.backgroundColor = "red";
       console.log(e.currentTarget);
-      
     }
     const answerObject: IAnswerObject = {
       question: questions[number].question,
@@ -76,27 +76,7 @@ const App = () => {
     <div className="App">
       <h1>React Quiz</h1>
       {gameOver || userAnswers.length === totalQuestions ? (
-        <form
-          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-            startTrivia(
-              e,
-              parseInt(e.currentTarget.totalQuestions.value),
-              e.currentTarget.difficulty.value
-            );
-          }}
-        >
-          <input
-            type="text"
-            placeholder="total questions:"
-            name="totalQuestions"
-          />
-          <select name="difficulty">
-            <option value="easy">easy</option>
-            <option value="medium">medium</option>
-            <option value="hard">hard</option>
-          </select>
-          <button type="submit">Start Quiz</button>
-        </form>
+        <QuizForm startTrivia={startTrivia} />
       ) : null}
       {userAnswers.length === totalQuestions && totalQuestions !== 0 ? (
         <p>Score: {score}</p>
